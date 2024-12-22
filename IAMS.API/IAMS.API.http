@@ -1,0 +1,36 @@
+@IAMS.API_HostAddress = http://localhost:5050
+
+GET {{IAMS.API_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
+
+POST {{IAMS.API_HostAddress}}/country
+Content-Type: application/json
+
+{
+  "CountryName":"Brazil",
+  "CountryCode":"BR"
+}
+###
+
+GET {{IAMS.API_HostAddress}}/country
+
+###
+
+GET {{IAMS.API_HostAddress}}/country/1
+
+###
+
+PUT {{IAMS.API_HostAddress}}/country/1
+Content-Type: application/json
+
+{
+  "id": 1,
+  "CountryName": "United America"
+}
+###
+
+
+
+GET {{IAMS.API_HostAddress}}/state/1/1/10
