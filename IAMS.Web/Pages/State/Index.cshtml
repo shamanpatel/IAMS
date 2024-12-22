@@ -1,0 +1,83 @@
+﻿@page
+@model IAMS.Web.Pages.State.IndexModel
+@{
+    ViewData["Title"] = "State page";
+}
+
+<div class="text-center">
+    <h1 class="display-4">State List</h1>
+
+    @*   <form method="post"> *@
+    <form asp-page="./Index" method="get">
+        <div class="form-actions no-color">
+            <p>
+                <select name="countryId" asp-items="@Model.CountryList" asp-for="SelectedCountryId" class="form-select">
+                    <option value="0">Select Country</option>
+                </select>
+            </p>
+            <p>             
+                <input type="text" name="SearchString" value="@Model.CurrentFilter" class="form-control" placeholder="State Name" />
+            </p>
+            <p>
+                <input type="submit" value="Search" class="btn btn-primary" /> |
+                <a asp-page="./Index">Back to full List</a>
+                <a asp-page="Create">Create New</a>
+            </p>
+        </div>
+    </form>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>State ID</th>             
+                <th>State Name</th>
+                <th>State Code</th>
+                <th>Country Name</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model.States != null)
+            {
+                foreach (var state in Model.States.Data)
+                {
+                    <tr>
+                        <td> @state.StateId </td>
+                      
+                        <td>@state.StateName</td>
+                        <td>@state.StateCode</td>
+                        <td>@state.CountryName</td>
+                        <td>
+                            <!-- <snippet_Edit> -->
+                            <a asp-page="./Edit" asp-route-id="@state.StateId">Edit</a> |
+                            <!-- </snippet_Edit> -->
+                            <!-- <snippet_Delete> -->
+                            <button type="submit" asp-page-handler="delete" asp-route-id="@state.StateId">delete</button>
+                            <!-- </snippet_Delete> -->
+                        </td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+    @{
+        var prevDisabled = !Model.States.HasPreviousPage ? "disabled" : "";
+        var nextDisabled = !Model.States.HasNextPage ? "disabled" : "";
+    }
+
+    <a asp-page="./Index"
+       asp-route-pageIndex="@(Model.States.PageNumber - 1)"
+       asp-route-currentFilter="@Model.CurrentFilter"
+       asp-route-selectedCountryId="@Model.SelectedCountryId"
+       class="btn btn-primary @prevDisabled">
+        Previous
+    </a>
+    <a asp-page="./Index"
+       asp-route-pageIndex="@(Model.States.PageNumber + 1)"
+       asp-route-currentFilter="@Model.CurrentFilter"
+       asp-route-selectedCountryId="@Model.SelectedCountryId"
+       class="btn btn-primary @nextDisabled">
+        Next
+    </a>
+
+</div>

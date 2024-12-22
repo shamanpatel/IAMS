@@ -1,0 +1,43 @@
+﻿@page
+@model IAMS.Web.Pages.Country.IndexModel
+@{
+    ViewData["Title"] = "Country List";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Country List</h1>
+    <a asp-page="Create">Create New</a>
+    <form method="post">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Country Name</th>
+                    <th>Country Code</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model.Countries != null)
+                {
+                    foreach (var country in Model.Countries)
+                    {
+                        <tr>
+                            <td> @country.CountryId </td>
+                            <td>@country.CountryName</td>
+                            <td>@country.CountryCode</td>
+                            <td>
+                                <!-- <snippet_Edit> -->
+                                <a asp-page="./Edit" asp-route-id="@country.CountryId">Edit</a> |
+                                <!-- </snippet_Edit> -->
+                                <!-- <snippet_Delete> -->
+                                <button type="submit" asp-page-handler="delete" asp-route-id="@country.CountryId">delete</button>
+                                <!-- </snippet_Delete> -->
+                            </td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>      
+    </form>
+</div>

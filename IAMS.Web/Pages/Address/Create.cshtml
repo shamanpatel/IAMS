@@ -1,0 +1,117 @@
+﻿@page
+@model IAMS.Web.Pages.Address.CreateModel
+@{
+    ViewData["Title"] = "Create Address";
+}
+<div class="col-md-6 offset-md-3">
+    <form method="post" id="frmAddress">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <div class="form-floating mb-3">
+            <input class="form-control" asp-for="Address!.RecipientName">
+            <label asp-for="Address!.RecipientName"></label>
+            <span class="text-danger field-validation-valid" asp-validation-for="Address!.RecipientName"></span>
+        </div>
+        <div id="grid"></div>       
+        <div class="form-floating mb-3">
+            <select asp-items="@Model.CountryList" asp-for="Address.CountryId" class="form-select">
+                <option value="0">Select Country</option>
+            </select>
+            <span class="text-danger field-validation-valid" asp-validation-for="Address!.CountryId"></span>
+        </div>
+        <div class="form-floating mb-3">
+            <select asp-for="Address.StateId" class="form-select">
+                <option value="0">Select State</option>
+            </select>
+            <span class="text-danger field-validation-valid" asp-validation-for="Address!.StateId"></span>
+        </div>
+        <div class="form-floating mb-3">
+            <input class="form-control" asp-for="Address!.City">
+            <label asp-for="Address!.City"></label>
+            <span class="text-danger field-validation-valid" asp-validation-for="Address!.City"></span>
+        </div>
+        <div class="form-floating mb-3">
+            <input class="form-control" asp-for="Address!.PostalCode">
+            <label asp-for="Address!.PostalCode"></label>
+            <span class="text-danger field-validation-valid" asp-validation-for="Address!.PostalCode"></span>
+        </div>      
+        <button type="submit" class="w-100 btn btn-lg btn-primary" id="btnSubmit">Submit</button>
+    </form>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+
+    <script>
+        var countryId = 0;
+        $(function () {
+            $('#btnSubmit').click(function () {
+                var $form = $("#frmAddress");
+                $form.validate();               
+            });            
+        });       
+
+        $(function () {
+            $("#Address_CountryId").on("change", function (e) {
+                e = e || window.event; // To support old browsers
+                e.preventDefault();
+
+                countryId = $(this).val();
+                $("#grid").empty();
+                $("#Address_StateId").empty();
+                $("#Address_StateId").append("<option value=''>Select State</option>");
+                $.getJSON("/address/create?handler=States&countryId=" + countryId, (data) => {
+                    $.each(data.states, function (i, item) {
+                        $("#Address_StateId").append(`<option value="${item.stateId}">${item.stateName}</option>`);
+                    });
+                    $.each(data.addressFormats, function (j, component) {
+                        let indx_ = 1 + parseInt(j);
+
+                        var name_ = 'Address.AddressLine' + indx_;
+                        var id_ = 'Address_AddressLine' + indx_;
+
+                        var labelText = component.componentName;
+                        var dataValRequiredText = labelText + " is required.";
+
+                        var $div = $('<div>', {
+                            class: 'form-floating mb-3'                           
+                        });
+
+                        // Create the input element with class and asp-for attribute
+                        var $input = $('<input>', {
+                            class: 'form-control',
+                            value: '',
+                            'type': 'text',
+                            'name': name_,
+                            'id': id_,
+                            'data-val': "true",
+                            'data-val-required': dataValRequiredText
+                        });
+
+
+                        // Create the label element with asp-for attribute and id
+                        var $label = $('<label>', {
+                            'for': id_                          
+                        }).text(labelText);;
+
+                        // Create the span element with class and asp-validation-for attribute
+                        var $span = $('<span>', {
+                            class: 'text-danger field-validation-valid',
+                            'data-valmsg-for': name_,
+                            'data-valmsg-replace': 'true'
+                        });
+
+                        var form = $("#frmAddress")
+                            .removeData("validator")
+                            .removeData("unobtrusiveValidation");
+
+
+                        $div.append($input).append($label).append($span);
+                        $('#grid').append($div);
+                        $.validator.unobtrusive.parse(form);
+                        //form.validate();
+                    });
+                });               
+            });
+        });
+    </script>
+}

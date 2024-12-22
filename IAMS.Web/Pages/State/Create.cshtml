@@ -1,0 +1,29 @@
+﻿@page
+@model IAMS.Web.Pages.State.CreateModel
+@{
+    ViewData["Title"] = "Create State";
+}
+<form method="post">
+    <div class="col-md-6 offset-md-3">
+        <form method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-floating mb-3">
+                <select name="CountryId" asp-items="@Model.CountryList" asp-for="SelectedCountryId" class="form-select">
+                    <option value="0">Select Country</option>
+                </select>
+            </div>
+            <div class="form-floating mb-3">
+                <input class="form-control" asp-for="State!.StateName">
+                <label asp-for="State!.StateName"></label>
+                <span class="text-danger field-validation-valid" asp-validation-for="State!.StateName"></span>
+            </div>
+           
+            <button type="submit" class="w-100 btn btn-lg btn-primary">Submit</button>
+
+        </form>
+
+    </div>
+</form>
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
